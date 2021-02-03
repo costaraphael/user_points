@@ -1,11 +1,12 @@
-# Script for populating the database. You can run it as:
-#
-#     mix run priv/repo/seeds.exs
-#
-# Inside the script, you can read and write to any of your
-# repositories directly:
-#
-#     UserPoints.Repo.insert!(%UserPoints.SomeSchema{})
-#
-# We recommend using the bang functions (`insert!`, `update!`
-# and so on) as they will fail if something goes wrong.
+now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+
+users =
+  for _ <- 1..100 do
+    %{
+      points: 0,
+      inserted_at: now,
+      updated_at: now
+    }
+  end
+
+UserPoints.Repo.insert_all(UserPoints.Users.User, users)
