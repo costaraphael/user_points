@@ -36,26 +36,7 @@ defmodule UserPoints.UsersTest do
       assert :ok = Users.shuffle_user_points()
 
       post_update = list_users() |> Enum.sort_by(& &1.id)
-
-      assert length(pre_update) == length(post_update)
-
-      unchanged_users =
-        [pre_update, post_update]
-        |> Enum.zip()
-        |> Enum.reject(fn {pre_update_user, post_update_user} ->
-          assert pre_update_user.id == post_update_user.id
-
-          pre_update_user.points != post_update_user.points
-        end)
-        |> Enum.count()
-
-      # some users might end up with the same points, but more than 10% of them indicates that
-      # something is probably off
-      assert unchanged_users / length(pre_update) < 0.1
-
-      # some users might end up with the same points as other users, but we still expect some degree
-      # of diversity in the end result
-      assert post_update |> Enum.uniq_by(& &1.points) |> length() > 40
+      assert_users_were_randomized(pre_update, post_update)
     end
   end
 end
